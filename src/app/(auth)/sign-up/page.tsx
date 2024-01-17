@@ -13,6 +13,7 @@ import { Label } from '@/components/ui/label'
 import Link from 'next/link'
 import React from 'react'
 import { cn } from '@/lib/utils'
+import { trpc } from '@/trpc/client'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
@@ -24,6 +25,9 @@ const Page = () => {
   } = useForm<TAuthCredentialsValidator>({
     resolver: zodResolver(AuthCredentialsValidator),
   })
+
+  const { data } = trpc.anyApiRoute.useQuery()
+  console.log('data', data)
 
   const onsubmit = ({ email, password }: TAuthCredentialsValidator) => {
     // send to server
