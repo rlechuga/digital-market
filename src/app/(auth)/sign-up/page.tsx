@@ -3,7 +3,7 @@
 import {
   AuthCredentialsValidator,
   TAuthCredentialsValidator,
-} from '@/lib/validators/account-crdentials-validators'
+} from '@/lib/validators/account-credentials-validator'
 import { Button, buttonVariants } from '@/components/ui/button'
 
 import { ArrowRight } from 'lucide-react'
@@ -11,9 +11,7 @@ import { Icons } from '@/components/Icons'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import Link from 'next/link'
-import React from 'react'
 import { cn } from '@/lib/utils'
-import { trpc } from '@/trpc/client'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
@@ -26,12 +24,8 @@ const Page = () => {
     resolver: zodResolver(AuthCredentialsValidator),
   })
 
-  const { data } = trpc.anyApiRoute.useQuery()
-  console.log('data', data)
-
-  const onsubmit = ({ email, password }: TAuthCredentialsValidator) => {
-    // send to server
-    console.log(email, password)
+  const onSubmit = async ({ email, password }: TAuthCredentialsValidator) => {
+    // send data to the server
   }
 
   return (
@@ -40,8 +34,8 @@ const Page = () => {
         <div className='mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]'>
           <div className='flex flex-col items-center space-y-2 text-center'>
             <Icons.logo className='h-20 w-20' />
-            <h1 className='text-2xl font-semibold tracking-tighter'>
-              Sign in to your account
+            <h1 className='text-2xl font-semibold tracking-tight'>
+              Create an accout
             </h1>
 
             <Link
@@ -49,41 +43,50 @@ const Page = () => {
                 variant: 'link',
                 className: 'gap-1.5',
               })}
-              href='/sign-up'
+              href='/sign-in'
             >
-              Don&apos;t have an account?
-              <ArrowRight className='h-4 w-4' />
+              Already have an account? Sign in
+              <ArrowRight className='w-4 h-4' />
             </Link>
           </div>
 
-          {/* sign up form */}
           <div className='grid gap-6'>
-            <form onSubmit={handleSubmit(onsubmit)}>
+            <form onSubmit={handleSubmit(onSubmit)}>
               <div className='grid gap-2'>
                 <div className='grid gap-1 py-2'>
-                  <Label htmlFor='email'>Email</Label>
+                  <label htmlFor='email'>Email</label>
                   <Input
-                    className={cn({
-                      'focus-visible:ring-red-500': errors.email,
-                    })}
-                    placeholder='your@example.com'
                     {...register('email')}
+                    className={cn({
+                      'focus-visible: ring-red-500': errors.email,
+                    })}
+                    placeholder='you@example.com'
                   />
+                  {errors.email && (
+                    <p className='text-sm text-red-500'>
+                      {errors.email.message}
+                    </p>
+                  )}
                 </div>
 
                 <div className='grid gap-1 py-2'>
-                  <Label htmlFor='Password'>Password</Label>
+                  <Label htmlFor='password'>Password</Label>
                   <Input
-                    className={cn({
-                      'focus-visible:ring-red-500': errors.password,
-                    })}
-                    type='password'
-                    placeholder='Password'
                     {...register('password')}
+                    type='password'
+                    className={cn({
+                      'focus-visible: ring-red-500': errors.password,
+                    })}
+                    placeholder='********'
                   />
+                  {errors.password && (
+                    <p className='text-sm text-red-500'>
+                      {errors.password.message}
+                    </p>
+                  )}
                 </div>
 
-                <Button>Sigin in</Button>
+                <Button>Sign up</Button>
               </div>
             </form>
           </div>
