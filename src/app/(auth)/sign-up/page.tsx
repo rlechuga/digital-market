@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
+import { trpc } from '@/trpc/client'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
@@ -24,8 +25,13 @@ const Page = () => {
     resolver: zodResolver(AuthCredentialsValidator),
   })
 
+  const {mutate, isLoading} = trpc.auth.createPayloadUser.useMutation({
+    
+  })
+
   const onSubmit = async ({ email, password }: TAuthCredentialsValidator) => {
     // send data to the server
+    mutate({email, password})
   }
 
   return (
