@@ -35,24 +35,24 @@ interface Args {
 export const getPayloadClient = async ({
   initOptions,
 }: Args = {}): Promise<Payload> => {
-  if(!process.env.PAYLOAD_SECRET) {
+  if (!process.env.PAYLOAD_SECRET) {
     throw new Error('PAYLOAD_SECRET is missing')
   }
 
   if (cached.client) {
-    return  cached.client
+    return cached.client
   }
 
   if (!cached.promise) {
     cached.promise = payload.init({
       email: {
         transport: transporter,
-        fromAddress: 'mail@rubenlechuga.com',
+        fromAddress: 'onboarding@resend.dev', // TODO: change this to real domail like bit7access.com
         fromName: 'Digital Market',
       },
       secret: process.env.PAYLOAD_SECRET,
-      local: initOptions?.express ? false: true,
-      ...initOptions || {},
+      local: initOptions?.express ? false : true,
+      ...(initOptions || {}),
     })
   }
 
