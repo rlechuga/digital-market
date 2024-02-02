@@ -1,8 +1,11 @@
-import { ArrowDownToLine, CheckCircle, Leaf } from 'lucide-react';
-import { Button, buttonVariants } from '@/components/ui/button';
+'use client'
 
-import Link from 'next/link';
-import MaxWidthWrapper from '@/components/MaxWidthWrapper';
+import { ArrowDownToLine, CheckCircle, Leaf } from 'lucide-react'
+import { Button, buttonVariants } from '@/components/ui/button'
+
+import Link from 'next/link'
+import MaxWidthWrapper from '@/components/MaxWidthWrapper'
+import ProductReel from '@/components/ProductReel'
 
 const perks = [
   {
@@ -23,7 +26,7 @@ const perks = [
     description:
       "We've pledged 1% of sales to the preservation and restoration of the natural environment.",
   },
-];
+]
 
 export default function Home() {
   return (
@@ -46,7 +49,11 @@ export default function Home() {
           </div>
         </div>
 
-        {/* TODO: list products */}
+        <ProductReel
+          query={{ sort: 'desc', limit: 4 }}
+          href='/products'
+          title='Brand new'
+        />
       </MaxWidthWrapper>
 
       <section className='border-t border-gray-200 bg-gray-50'>
@@ -77,5 +84,5 @@ export default function Home() {
         </MaxWidthWrapper>
       </section>
     </>
-  );
+  )
 }
