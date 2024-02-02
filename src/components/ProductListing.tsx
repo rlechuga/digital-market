@@ -3,7 +3,7 @@
 import { cn, formatPrice } from '@/lib/utils'
 import { useEffect, useState } from 'react'
 
-// import ImageSlider from './ImageSlider'
+import ImageSlider from './ImageSlider'
 import Link from 'next/link'
 import { PRODUCT_CATEGORIES } from '@/config'
 import { Product } from '@/payload-types'
@@ -51,7 +51,7 @@ const ProductListing = ({
         )}
         href={`/product/${product.id}`}>
         <div className='flex flex-col w-full'>
-          {/* <ImageSlider urls={validUrls} /> */}
+          <ImageSlider urls={validUrls} />
 
           <h3 className='mt-4 font-medium text-sm text-gray-700'>
             {product.name}
