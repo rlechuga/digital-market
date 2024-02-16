@@ -1,15 +1,15 @@
 import { publicProcedure, router } from './trpc'
 
-import { Query } from '@tanstack/react-query'
 import { QueryValidator } from '../lib/validators/query-validator'
 import { authRouter } from './auth-router'
 import { getPayloadClient } from '../get-payload'
-// import { paymentRouter } from './payment-router'
+import { paymentRouter } from './payment-router'
 import { z } from 'zod'
 
 // this will be our backend
 export const appRouter = router({
   auth: authRouter,
+  payment: paymentRouter,
 
   getInfiniteProducts: publicProcedure
   .input(
