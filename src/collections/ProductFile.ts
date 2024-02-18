@@ -24,7 +24,9 @@ const yourOwnAndPurchased: Access = async ({ req }) => {
     },
   })
 
-  const ownProductFileIds = products.map((prod) => prod.product_files).flat()
+  const ownProductFileIds = products
+    .map((prod) => prod.product_files)
+    .flat()
 
   const { docs: orders } = await req.payload.find({
     collection: 'orders',
@@ -54,7 +56,10 @@ const yourOwnAndPurchased: Access = async ({ req }) => {
 
   return {
     id: {
-      in: [...ownProductFileIds, ...purchasedProductFileIds],
+      in: [
+        ...ownProductFileIds,
+        ...purchasedProductFileIds,
+      ],
     },
   }
 }
@@ -75,7 +80,11 @@ export const ProductFiles: CollectionConfig = {
   upload: {
     staticURL: '/product_files',
     staticDir: 'product_files',
-    mimeTypes: ['image/*', 'font/*', 'application/postscript'],
+    mimeTypes: [
+      'image/*',
+      'font/*',
+      'application/postscript',
+    ],
   },
   fields: [
     {

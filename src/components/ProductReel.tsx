@@ -3,7 +3,6 @@
 import Link from 'next/link'
 import { Product } from '@/payload-types'
 import ProductListing from './ProductListing'
-// import ProductListing from './ProductListing'
 import { TQueryValidator } from '@/lib/validators/query-validator'
 import { trpc } from '@/trpc/client'
 

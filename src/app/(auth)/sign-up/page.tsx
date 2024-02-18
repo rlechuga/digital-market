@@ -4,8 +4,10 @@ import {
   AuthCredentialsValidator,
   TAuthCredentialsValidator,
 } from '@/lib/validators/account-credentials-validator'
-import { Button, buttonVariants } from '@/components/ui/button'
-import { useRouter, useSearchParams } from 'next/navigation'
+import {
+  Button,
+  buttonVariants,
+} from '@/components/ui/button'
 
 import { ArrowRight } from 'lucide-react'
 import { Icons } from '@/components/Icons'
@@ -17,12 +19,10 @@ import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
 import { trpc } from '@/trpc/client'
 import { useForm } from 'react-hook-form'
+import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 const Page = () => {
-  const router = useRouter()
-
-  
   const {
     register,
     handleSubmit,
@@ -31,38 +31,42 @@ const Page = () => {
     resolver: zodResolver(AuthCredentialsValidator),
   })
 
+  const router = useRouter()
+
   const { mutate, isLoading } =
-  trpc.auth.createPayloadUser.useMutation({
-    onError: (err) => {
-      if (err.data?.code === 'CONFLICT') {
+    trpc.auth.createPayloadUser.useMutation({
+      onError: (err) => {
+        if (err.data?.code === 'CONFLICT') {
+          toast.error(
+            'This email is already in use. Sign in instead?'
+          )
+
+          return
+        }
+
+        if (err instanceof ZodError) {
+          toast.error(err.issues[0].message)
+
+          return
+        }
+
         toast.error(
-          'This email is already in use. Sign in instead?'
+          'Something went wrong. Please try again.'
         )
+      },
+      onSuccess: ({ sentToEmail }) => {
+        toast.success(
+          `Verification email sent to ${sentToEmail}.`
+        )
+        router.push('/verify-email?to=' + sentToEmail)
+      },
+    })
 
-        return
-      }
-
-      if (err instanceof ZodError) {
-        toast.error(err.issues[0].message)
-
-        return
-      }
-
-      toast.error(
-        'Something went wrong. Please try again.'
-      )
-    },
-    onSuccess: ({ sentToEmail }) => {
-      toast.success(
-        `Verification email sent to ${sentToEmail}.`
-      )
-      router.push('/verify-email?to=' + sentToEmail)
-    },
-  })
-
-  const onSubmit = async ({ email, password }: TAuthCredentialsValidator) => {
-    // send data to the server
-    mutate({email, password})
+  const onSubmit = ({
+    email,
+    password,
+  }: TAuthCredentialsValidator) => {
+    mutate({ email, password })
   }
 
   return (
@@ -72,7 +76,7 @@ const Page = () => {
           <div className='flex flex-col items-center space-y-2 text-center'>
             <Icons.logo className='h-20 w-20' />
             <h1 className='text-2xl font-semibold tracking-tight'>
-              Create an accout
+              Create an account
             </h1>
 
             <Link
@@ -80,10 +84,9 @@ const Page = () => {
                 variant: 'link',
                 className: 'gap-1.5',
               })}
-              href='/sign-in'
-            >
-              Already have an account? Sign in
-              <ArrowRight className='w-4 h-4' />
+              href='/sign-in'>
+              Already have an account? Sign-in
+              <ArrowRight className='h-4 w-4' />
             </Link>
           </div>
 
@@ -91,11 +94,12 @@ const Page = () => {
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className='grid gap-2'>
                 <div className='grid gap-1 py-2'>
-                  <label htmlFor='email'>Email</label>
+                  <Label htmlFor='email'>Email</Label>
                   <Input
                     {...register('email')}
                     className={cn({
-                      'focus-visible: ring-red-500': errors.email,
+                      'focus-visible:ring-red-500':
+                        errors.email,
                     })}
                     placeholder='you@example.com'
                   />
@@ -112,11 +116,12 @@ const Page = () => {
                     {...register('password')}
                     type='password'
                     className={cn({
-                      'focus-visible: ring-red-500': errors.password,
+                      'focus-visible:ring-red-500':
+                        errors.password,
                     })}
-                    placeholder=''
+                    placeholder='Password'
                   />
-                  {errors.password && (
+                  {errors?.password && (
                     <p className='text-sm text-red-500'>
                       {errors.password.message}
                     </p>

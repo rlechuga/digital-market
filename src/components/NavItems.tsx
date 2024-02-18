@@ -1,64 +1,64 @@
-'use client';
+'use client'
 
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react'
 
-import NavItem from './NavItem';
-import { PRODUCT_CATEGORIES } from '@/config';
-import { useOnClickOutside } from '@/hooks/use-on-click-outside';
+import NavItem from './NavItem'
+import { PRODUCT_CATEGORIES } from '@/config'
+import { useOnClickOutside } from '@/hooks/use-on-click-outside'
 
 const NavItems = () => {
-  const [activeIndex, setActiveIndex] = React.useState<number | null>(null);
+  const [activeIndex, setActiveIndex] = useState<
+    null | number
+  >(null)
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        setActiveIndex(null);
+        setActiveIndex(null)
       }
-    };
+    }
 
-    document.addEventListener('keydown', handler);
+    document.addEventListener('keydown', handler)
 
     return () => {
-      document.removeEventListener('keydown', handler);
-    };
-  }, []);
+      document.removeEventListener('keydown', handler)
+    }
+  }, [])
 
+  const isAnyOpen = activeIndex !== null
 
-
-  const isAnyOpen = activeIndex !== null;
-
-  const navRef = useRef<HTMLDivElement | null>(null);
+  const navRef = useRef<HTMLDivElement | null>(null)
 
   useOnClickOutside(navRef, () => setActiveIndex(null))
 
   return (
     <div className='flex gap-4 h-full' ref={navRef}>
-      {PRODUCT_CATEGORIES.map((category, index) => {
+      {PRODUCT_CATEGORIES.map((category, i) => {
         const handleOpen = () => {
-          if (activeIndex === index) {
-            setActiveIndex(null);
+          if (activeIndex === i) {
+            setActiveIndex(null)
           } else {
-            setActiveIndex(index);
+            setActiveIndex(i)
           }
-        };
+        }
 
-        const close = () => setActiveIndex(null);
+        const close = () => setActiveIndex(null)
 
-        const isOpen = index === activeIndex;
+        const isOpen = i === activeIndex
 
         return (
           <NavItem
-            key={category.value}
             category={category}
+            close={close}
             handleOpen={handleOpen}
             isOpen={isOpen}
+            key={category.value}
             isAnyOpen={isAnyOpen}
-            close={close}
           />
-        );
+        )
       })}
     </div>
-  );
-};
+  )
+}
 
-export default NavItems;
+export default NavItems

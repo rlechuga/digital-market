@@ -1,13 +1,16 @@
 'use client'
 
+import { ArrowRight, Loader2 } from 'lucide-react'
 import {
   AuthCredentialsValidator,
   TAuthCredentialsValidator,
 } from '@/lib/validators/account-credentials-validator'
-import { Button, buttonVariants } from '@/components/ui/button'
+import {
+  Button,
+  buttonVariants,
+} from '@/components/ui/button'
 import { useRouter, useSearchParams } from 'next/navigation'
 
-import { ArrowRight } from 'lucide-react'
 import { Icons } from '@/components/Icons'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -41,31 +44,36 @@ const Page = () => {
     resolver: zodResolver(AuthCredentialsValidator),
   })
 
-  const { mutate: signIn, isLoading } = trpc.auth.signIn.useMutation({
-    onSuccess: () => {
-      toast.success('Signed in successfully')
+  const { mutate: signIn, isLoading } =
+    trpc.auth.signIn.useMutation({
+      onSuccess: async () => {
+        toast.success('Signed in successfully')
 
-      router.refresh()
+        router.refresh()
 
-      if (origin) {
-        return router.push(origin)
-      }
+        if (origin) {
+          router.push(`/${origin}`)
+          return
+        }
 
-      if (isSeller) {
-        return router.push('/sell')
-      }
+        if (isSeller) {
+          router.push('/sell')
+          return
+        }
 
-      router.push('/')
-    },
-    onError: (err) => {
-      if (err.data?.code === 'UNAUTHORIZED') {
-        toast.error('Invalid email or password')
-      }
-    },
-  })
+        router.push('/')
+      },
+      onError: (err) => {
+        if (err.data?.code === 'UNAUTHORIZED') {
+          toast.error('Invalid email or password.')
+        }
+      },
+    })
 
-  const onSubmit = async ({ email, password }: TAuthCredentialsValidator) => {
-    // send data to the server
+  const onSubmit = ({
+    email,
+    password,
+  }: TAuthCredentialsValidator) => {
     signIn({ email, password })
   }
 
@@ -76,7 +84,8 @@ const Page = () => {
           <div className='flex flex-col items-center space-y-2 text-center'>
             <Icons.logo className='h-20 w-20' />
             <h1 className='text-2xl font-semibold tracking-tight'>
-              Sign in to your {isSeller ? 'seller' : ''} account
+              Sign in to your {isSeller ? 'seller' : ''}{' '}
+              account
             </h1>
 
             <Link
@@ -84,10 +93,9 @@ const Page = () => {
                 variant: 'link',
                 className: 'gap-1.5',
               })}
-              href='/sign-up'
-            >
+              href='/sign-up'>
               Don&apos;t have an account?
-              <ArrowRight className='w-4 h-4' />
+              <ArrowRight className='h-4 w-4' />
             </Link>
           </div>
 
@@ -95,11 +103,12 @@ const Page = () => {
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className='grid gap-2'>
                 <div className='grid gap-1 py-2'>
-                  <label htmlFor='email'>Email</label>
+                  <Label htmlFor='email'>Email</Label>
                   <Input
                     {...register('email')}
                     className={cn({
-                      'focus-visible: ring-red-500': errors.email,
+                      'focus-visible:ring-red-500':
+                        errors.email,
                     })}
                     placeholder='you@example.com'
                   />
@@ -116,29 +125,34 @@ const Page = () => {
                     {...register('password')}
                     type='password'
                     className={cn({
-                      'focus-visible: ring-red-500': errors.password,
+                      'focus-visible:ring-red-500':
+                        errors.password,
                     })}
-                    placeholder=''
+                    placeholder='Password'
                   />
-                  {errors.password && (
+                  {errors?.password && (
                     <p className='text-sm text-red-500'>
                       {errors.password.message}
                     </p>
                   )}
                 </div>
 
-                <Button>Sign in</Button>
+                <Button disabled={isLoading}>
+                  {isLoading && (
+                    <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                  )}
+                  Sign in
+                </Button>
               </div>
             </form>
 
             <div className='relative'>
               <div
                 aria-hidden='true'
-                className='absolute inset-0 flex items-center'
-              >
+                className='absolute inset-0 flex items-center'>
                 <span className='w-full border-t' />
               </div>
-              <div className='relative flex justify-center text-sm uppercase'>
+              <div className='relative flex justify-center text-xs uppercase'>
                 <span className='bg-background px-2 text-muted-foreground'>
                   or
                 </span>
@@ -147,16 +161,16 @@ const Page = () => {
 
             {isSeller ? (
               <Button
-              onClick={continueAsBuyer}
-              variant='secondary'
-              disabled={isLoading}>
+                onClick={continueAsBuyer}
+                variant='secondary'
+                disabled={isLoading}>
                 Continue as customer
               </Button>
-            ): (
+            ) : (
               <Button
-              onClick={continueAsSeller}
-              variant='secondary'
-              disabled={isLoading}>
+                onClick={continueAsSeller}
+                variant='secondary'
+                disabled={isLoading}>
                 Continue as seller
               </Button>
             )}

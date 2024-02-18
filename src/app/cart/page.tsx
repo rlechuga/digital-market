@@ -64,7 +64,7 @@ const Page = () => {
                     src='/hippo-empty-cart.png'
                     fill
                     loading='eager'
-                    alt='empty shopping cart hippo'
+                    alt='empty shopping cart market'
                   />
                 </div>
                 <h3 className='font-semibold text-2xl'>
