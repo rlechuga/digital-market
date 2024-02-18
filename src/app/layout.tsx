@@ -1,19 +1,17 @@
 import './globals.css'
 
+import { cn, constructMetadata } from '@/lib/utils'
+
 import Footer from '@/components/Footer'
 import { Inter } from 'next/font/google'
 import type { Metadata } from 'next'
 import Navbar from '@/components/Navbar'
 import Providers from '@/components/Providers'
 import { Toaster } from 'sonner'
-import { cn } from '@/lib/utils'
-
-// import { cn, constructMetadata } from '@/lib/utils'
-
 
 const inter = Inter({ subsets: ['latin'] })
 
-// export const metadata = constructMetadata()
+export const metadata = constructMetadata()
 
 export default function RootLayout({
   children,
