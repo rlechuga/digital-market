@@ -8,7 +8,7 @@ const nextConfig = {
 			},
 			{
 				protocol: "https",
-				hostname: "digitalmarket-production.up.railway.app",
+				hostname: "digital-market-mocha.vercel.app",
 			},
 		],
 	},
