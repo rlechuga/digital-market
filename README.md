@@ -3,7 +3,7 @@
 Built with the Next.js 14 App Router, tRPC, TypeScript, Payload & Tailwind
 
 ###
-<span style="color:yellow">WARNING: This site is under construction</span>.
+<span style="color:yellow">WARNING: This site is under construction</span>. 
 
 ## Features
 
